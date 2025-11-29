@@ -4,13 +4,16 @@ let btns = ["yellow", "red", "purple", "green"];
 
 let started = false;
 let level = 0;
-let highestScore = 0;
+let highestScore = localStorage.getItem("simonHighestScore") ? parseInt(localStorage.getItem("simonHighestScore")) : 0;
 
 let h2 = document.querySelector("h2");
 let hs = document.querySelector("#hscore");
 
-document.addEventListener("keypress", function() {
-    if(started == false) {
+// Display the highest score on page load
+hs.innerText = `Highest Score: ${highestScore}`;
+
+document.addEventListener("keypress", function () {
+    if (started == false) {
         started = true;
         levelUp();
     }
@@ -18,7 +21,7 @@ document.addEventListener("keypress", function() {
 
 function btnFlash(btn) {
     btn.classList.add("flash");
-    setTimeout(function() {
+    setTimeout(function () {
         btn.classList.remove("flash");
     }, 250);
 }
@@ -27,7 +30,7 @@ function levelUp() {
     usersqe = [];
     level++;
     h2.innerText = `Level ${level}`;
-    hs.innerText = `Highest Score ${highestScore}`;
+    hs.innerText = `Highest Score: ${highestScore}`;
     let randIdx = Math.floor(Math.random() * 4);
     let randColor = btns[randIdx];
     let randBtn = document.querySelector(`.${randColor}`);
@@ -36,19 +39,20 @@ function levelUp() {
 }
 
 function checkAns(idx) {
-    if(gamesqe[idx] === usersqe[idx]) {
-        if(gamesqe.length == usersqe.length) {
+    if (gamesqe[idx] === usersqe[idx]) {
+        if (gamesqe.length == usersqe.length) {
             setTimeout(levelUp, 1000);
         }
     } else {
         h2.innerHTML = `Game Over! Your score was <b>${level}</b> <br> Press any key to restart`;
         document.querySelector("body").style.backgroundColor = "red";
-        setTimeout(function() {
+        setTimeout(function () {
             document.querySelector("body").style.backgroundColor = "white";
         }, 200);
-        if(highestScore < level) {
+        if (highestScore < level) {
             highestScore = level;
-            hs.innerText = `Highest Score ${highestScore}`;
+            localStorage.setItem("simonHighestScore", highestScore);
+            hs.innerText = `Highest Score: ${highestScore}`;
         }
         reset();
     }
@@ -63,7 +67,7 @@ function btnPress() {
 }
 
 let btnAll = document.querySelectorAll(".btn");
-for(btn of btnAll) {
+for (btn of btnAll) {
     btn.addEventListener("click", btnPress);
 }
 
